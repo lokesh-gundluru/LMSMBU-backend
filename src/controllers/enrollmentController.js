@@ -20,6 +20,27 @@ exports.enroll = async (req, res) => {
   }
 };
 
+// Unenroll from a course
+exports.unenroll = async (req, res) => {
+  try {
+    const courseId = req.params.courseId;
+
+    // Remove the enrollment
+    const enrollment = await Enrollment.findOneAndDelete({
+      student: req.user._id,
+      course: courseId,
+    });
+
+    if (!enrollment) return res.status(404).json({ message: 'Enrollment not found' });
+
+    res.json({ message: 'Successfully unenrolled' });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
+
 exports.myEnrollments = async (req, res) => {
   try {
     const enrolls = await Enrollment.find({ student: req.user._id }).populate('course');

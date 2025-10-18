@@ -5,6 +5,8 @@ const enrollmentController = require('../controllers/enrollmentController');
 const authMiddleware = require('../middleware/authMiddleware');
 
 router.post('/:courseId/enroll', authMiddleware, enrollmentController.enroll);
+router.post('/:courseId/unenroll', authMiddleware, enrollmentController.unenroll);
 router.get('/me', authMiddleware, enrollmentController.myEnrollments);
+
 
 module.exports = router;
