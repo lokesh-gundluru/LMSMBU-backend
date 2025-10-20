@@ -13,6 +13,7 @@ const server = http.createServer(app);
 const allowedOrigins = [
   "https://lmsmbu.vercel.app",
   "https://lmsmbu-backend1728.onrender.com",
+  "https://lmsmbu-frontend-jfvax8fdb-lokeshgundluru28-6474s-projects.vercel.app",
   "http://localhost:5173",
   "http://localhost:3000",
   process.env.FRONTEND_URL
@@ -82,7 +83,7 @@ io.on('connection', (socket) => {
 });
 
 // ✅ Start server
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 10000;
 server.listen(PORT, () => console.log(`✅ Server running on port ${PORT}`));
 
 module.exports = { io };
