@@ -8,14 +8,22 @@ const { Server } = require('socket.io');
 
 // Initialize express app and HTTP server
 const app = express();
+// ✅ Allow your frontend domain (Vercel)
+app.use(
+  cors({
+    origin: "https://lmsmbu.vercel.app",
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    credentials: true,
+  })
+);
 const server = http.createServer(app);
 
 // ✅ Initialize Socket.IO with proper CORS for frontend (both 3000 & 5173)
 const io = new Server(server, {
   cors: {
-    origin: ["http://localhost:5173", "http://localhost:3000",process.env.FRONTEND_URL,"https://lmsmbu-backend1728.onrender.com"],
+    origin: ["http://localhost:5173","https://lmsmbu.vercel.app", "http://localhost:3000",process.env.FRONTEND_URL,"https://lmsmbu-backend1728.onrender.com"],
     credentials: true,
-    methods: ["GET", "POST"]
+    methods: ["GET", "POST","PUT", "DELETE"]
   }
 });
 
