@@ -6,34 +6,41 @@ const cors = require('cors');
 const { connectDB } = require('./src/config/db');
 const { Server } = require('socket.io');
 
-// Initialize express app and HTTP server
 const app = express();
-// ✅ Allow your frontend domain (Vercel)
+const server = http.createServer(app);
+
+// ✅ Unified list of allowed origins (frontend + local dev)
+const allowedOrigins = [
+  "https://lmsmbu.vercel.app",
+  "https://lmsmbu-backend1728.onrender.com",
+  "http://localhost:5173",
+  "http://localhost:3000",
+  process.env.FRONTEND_URL
+].filter(Boolean); // removes undefined values
+
+// ✅ Global CORS setup for Express + API routes
 app.use(
   cors({
-    origin: "https://lmsmbu.vercel.app",
+    origin: allowedOrigins,
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,
   })
 );
-const server = http.createServer(app);
 
-// ✅ Initialize Socket.IO with proper CORS for frontend (both 3000 & 5173)
-const io = new Server(server, {
-  cors: {
-    origin: ["http://localhost:5173","https://lmsmbu.vercel.app", "http://localhost:3000",process.env.FRONTEND_URL,"https://lmsmbu-backend1728.onrender.com"],
-    credentials: true,
-    methods: ["GET", "POST","PUT", "DELETE"]
-  }
-});
-
-// ✅ Connect to MongoDB
-connectDB();
-
-// ✅ Middleware
-app.use(cors({ origin: process.env.FRONTEND_URL || ["http://localhost:5173"], credentials: true }));
 app.use(express.json());
 app.use('/uploads', express.static('uploads'));
+
+// ✅ Initialize Socket.IO with same CORS rules
+const io = new Server(server, {
+  cors: {
+    origin: allowedOrigins,
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE"],
+  },
+});
+
+// ✅ Connect to MongoDB Atlas
+connectDB();
 
 // ✅ API routes
 app.use('/api/auth', require('./src/routes/auth'));
@@ -60,11 +67,11 @@ io.on('connection', (socket) => {
     io.to(courseId).emit('courseMessage', msgData);
   });
 
-  socket.on("chatMessage", (data) => {
-    io.emit("chatMessage", data);
+  socket.on('chatMessage', (data) => {
+    io.emit('chatMessage', data);
   });
 
-  // --- Global public chat (general room) ---
+  // --- Global chat room ---
   socket.on('sendMessage', (data) => {
     io.emit('receiveMessage', data);
   });
