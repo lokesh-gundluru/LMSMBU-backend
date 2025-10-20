@@ -13,7 +13,7 @@ const server = http.createServer(app);
 // ✅ Initialize Socket.IO with proper CORS for frontend (both 3000 & 5173)
 const io = new Server(server, {
   cors: {
-    origin: ["http://localhost:5173", "http://localhost:3000",process.env.FRONTEND_URL],
+    origin: ["http://localhost:5173", "http://localhost:3000",process.env.FRONTEND_URL,"https://lmsmbu-backend1728.onrender.com"],
     credentials: true,
     methods: ["GET", "POST"]
   }
