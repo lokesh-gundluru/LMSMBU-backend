@@ -25,8 +25,8 @@ async function seed() {
 
   const course = await Course.create({ title: 'Intro to Demo', description: 'A demo course', durationWeeks: 4, teacher: teacher._id });
 
-  await Assignment.create({ course: course._id, title: 'MCQ 1', description: 'MCQ assignment', type: 'mcq', mcqQuestions: [{ question: '2+2?', options: ['1','2','4','5'], answerIndex: 2 }] });
-  await Assignment.create({ course: course._id, title: 'Essay 1', description: 'Write something', type: 'text' });
+  await Assignment.create({ course: course._id, title: 'MCQ 1', description: 'MCQ assignment', type: 'mcq',dueDate: '2025-10-30', mcqQuestions: [{ question: '2+2?', options: ['1','2','4','5'], answerIndex: 2 }] });
+  await Assignment.create({ course: course._id, title: 'Essay 1', description: 'Write something', type: 'text', dueDate: '2025-10-30'});
 
   await Enrollment.create({ student: student._id, course: course._id });
 

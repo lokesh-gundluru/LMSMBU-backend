@@ -26,3 +26,27 @@ exports.listCourseAssignments = async (req, res) => {
     res.status(500).json({ message: 'Server error' });
   }
 };
+
+exports.listAllAssignments = async (req, res) => {
+  try {
+    let assignments;
+
+    if (req.user.role === 'teacher') {
+      // Fetch only assignments for courses taught by this teacher
+      const teacherCourses = await Course.find({ teacher: req.user._id }).select('_id');
+      assignments = await Assignment.find({ course: { $in: teacherCourses.map(c => c._id) } });
+    } else if (req.user.role === 'student') {
+      // Fetch assignments for courses the student is enrolled in
+      const studentCourses = await Course.find({ students: req.user._id }).select('_id');
+      assignments = await Assignment.find({ course: { $in: studentCourses.map(c => c._id) } });
+    } else {
+      // Admin can see all assignments
+      assignments = await Assignment.find();
+    }
+
+    res.json(assignments);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Server error' });
+  }
+};

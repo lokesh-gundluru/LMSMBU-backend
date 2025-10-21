@@ -5,6 +5,7 @@ const assignmentController = require('../controllers/assignmentController');
 const authMiddleware = require('../middleware/authMiddleware');
 const roleMiddleware = require('../middleware/roleMiddleware');
 
+router.get('/', authMiddleware, assignmentController.listAllAssignments);
 router.post('/:courseId', authMiddleware, roleMiddleware('teacher'), assignmentController.createAssignment);
 router.get('/:courseId', authMiddleware, assignmentController.listCourseAssignments);
 
